@@ -11,6 +11,8 @@ public interface Payment {
 
     Boolean edit(String user, PaymentObj paymentObj, String type, Integer id) throws IOException;
 
+    Boolean delete(String user, PaymentObj paymentObj, String type, Integer id) throws IOException;
+
     List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException;
 
 }

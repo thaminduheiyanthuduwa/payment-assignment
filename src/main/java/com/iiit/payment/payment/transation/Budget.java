@@ -65,6 +65,28 @@ public class Budget implements Payment {
     }
 
     @Override
+    public Boolean delete(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<PaymentObj> info = readInfo.readBudget();
+
+
+        Integer finalId = id;
+        List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
+                .equals(finalId)).collect(Collectors.toList());
+
+        if (obj.isEmpty())
+            return false;
+        else {
+            info.remove(obj.get(0));
+            SaveInfo saveInfo = new SaveInfoImpl();
+            saveInfo.saveBudgetDetails(info);
+
+            return true;
+        }
+    }
+
+    @Override
     public List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();

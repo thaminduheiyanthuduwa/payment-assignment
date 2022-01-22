@@ -55,10 +55,33 @@ public class PaymentServiceImpl implements PaymentService {
         }
         else {
             responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
-            responseObj.setMsg("Fail");
+            responseObj.setMsg("No payment found for id "+id);
             return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @Override
+    public ResponseEntity delete(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
+
+        PaymentFactory paymentFactory = new PaymentFactory();
+
+        Payment paymentType = paymentFactory.getPayment(type);
+
+        Boolean state = paymentType.delete(user, paymentObj, type, id);
+
+        ResponseObj responseObj = new ResponseObj();
+
+        if (state) {
+            responseObj.setStatus(HttpStatus.OK.value());
+            responseObj.setMsg("Success");
+            return new ResponseEntity<>(responseObj, HttpStatus.OK);
+        }
+        else {
+            responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
+            responseObj.setMsg("No payment found for id "+id);
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
