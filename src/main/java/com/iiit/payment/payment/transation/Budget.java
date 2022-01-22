@@ -1,6 +1,7 @@
 package com.iiit.payment.payment.transation;
 
 import com.iiit.payment.payment.model.PaymentObj;
+import com.iiit.payment.payment.model.TotalPayments;
 import com.iiit.payment.payment.repositories.ReadInfo;
 import com.iiit.payment.payment.repositories.SaveInfo;
 import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
@@ -8,7 +9,6 @@ import com.iiit.payment.payment.repositories.impl.SaveInfoImpl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +46,7 @@ public class Budget implements Payment {
 
         Integer finalId = id;
         List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
-                .equals(finalId)).collect(Collectors.toList());
+                .equals(finalId) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
 
         if (obj.isEmpty())
             return false;
@@ -65,7 +65,7 @@ public class Budget implements Payment {
     }
 
     @Override
-    public Boolean delete(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
+    public Boolean delete(String user, String type, Integer id) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
         ArrayList<PaymentObj> info = readInfo.readBudget();
@@ -73,7 +73,7 @@ public class Budget implements Payment {
 
         Integer finalId = id;
         List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
-                .equals(finalId)).collect(Collectors.toList());
+                .equals(finalId) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
 
         if (obj.isEmpty())
             return false;
@@ -84,6 +84,20 @@ public class Budget implements Payment {
 
             return true;
         }
+    }
+
+    @Override
+    public TotalPayments getTotalValues(String user, String date) throws IOException {
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<PaymentObj> info = readInfo.readBudget();
+
+        double sumValue = info.stream().mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
+
+        TotalPayments totalPayments = new TotalPayments(sumValue, 0d, 0d);
+
+        return totalPayments;
+
     }
 
     @Override

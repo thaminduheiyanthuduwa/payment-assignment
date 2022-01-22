@@ -54,13 +54,23 @@ public class TransactionController {
     @RequestMapping(value = "/delete/{user_name}/{type}/{id}" ,method = RequestMethod.DELETE ,headers="Accept=application/json")
     public ResponseEntity deletePayment(@PathVariable(value = "user_name") String user,
                                       @PathVariable(value = "type") String type,
-                                      @PathVariable(value = "id") Integer id,
-                                      @RequestBody PaymentObj paymentObj) throws IOException {
+                                      @PathVariable(value = "id") Integer id) throws IOException {
 
 
         PaymentService paymentService = new PaymentServiceImpl();
 
-        return paymentService.delete(user, paymentObj, type, id);
+        return paymentService.delete(user, type, id);
+    }
+
+    @RequestMapping(value = "/total/{user_name}/{type}/{date}" ,method = RequestMethod.GET ,headers="Accept=application/json")
+    public ResponseEntity getTotalValues(@PathVariable(value = "user_name") String user,
+                                        @PathVariable(value = "type") String type,
+                                        @PathVariable(value = "date") String date) throws IOException {
+
+
+        PaymentService paymentService = new PaymentServiceImpl();
+
+        return paymentService.getTotalValues(user, type, date);
     }
 
 }

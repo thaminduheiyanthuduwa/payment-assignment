@@ -2,6 +2,7 @@ package com.iiit.payment.payment.services.impl;
 
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.ResponseObj;
+import com.iiit.payment.payment.model.TotalPayments;
 import com.iiit.payment.payment.repositories.ReadInfo;
 import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
 import com.iiit.payment.payment.services.PaymentService;
@@ -62,13 +63,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public ResponseEntity delete(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
+    public ResponseEntity delete(String user, String type, Integer id) throws IOException {
 
         PaymentFactory paymentFactory = new PaymentFactory();
 
         Payment paymentType = paymentFactory.getPayment(type);
 
-        Boolean state = paymentType.delete(user, paymentObj, type, id);
+        Boolean state = paymentType.delete(user, type, id);
 
         ResponseObj responseObj = new ResponseObj();
 
@@ -82,6 +83,24 @@ public class PaymentServiceImpl implements PaymentService {
             responseObj.setMsg("No payment found for id "+id);
             return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public ResponseEntity getTotalValues(String user, String type, String date) throws IOException {
+
+        PaymentFactory paymentFactory = new PaymentFactory();
+
+        Payment paymentType = paymentFactory.getPayment(type);
+
+        TotalPayments state = paymentType.getTotalValues(user, date);
+
+        ResponseObj responseObj = new ResponseObj();
+
+        responseObj.setStatus(HttpStatus.OK.value());
+        responseObj.setMsg("Success");
+        responseObj.setObject(state);
+        return new ResponseEntity<>(responseObj, HttpStatus.OK);
+
     }
 
     @Override
