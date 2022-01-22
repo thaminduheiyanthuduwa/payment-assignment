@@ -26,7 +26,6 @@ public class TransactionController {
 
     }
 
-
     @RequestMapping(value = "/{user_name}" ,method = RequestMethod.GET ,headers="Accept=application/json")
     public ResponseEntity getPayment(@PathVariable(value = "user_name") String user,
                                        @RequestParam(value = "payment_type") String paymentType,
@@ -38,6 +37,18 @@ public class TransactionController {
         PaymentService paymentService = new PaymentServiceImpl();
 
         return paymentService.getPayment(user, paymentType, date, category, type);
+    }
+
+    @RequestMapping(value = "/edit_payment/{user_name}/{type}/{id}" ,method = RequestMethod.POST ,headers="Accept=application/json")
+    public ResponseEntity editPayment(@PathVariable(value = "user_name") String user,
+                                      @PathVariable(value = "type") String type,
+                                      @PathVariable(value = "id") Integer id,
+                                      @RequestBody PaymentObj paymentObj) throws IOException {
+
+
+        PaymentService paymentService = new PaymentServiceImpl();
+
+        return paymentService.edit(user, paymentObj, type, id);
 
     }
 

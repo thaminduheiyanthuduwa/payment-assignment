@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 public class PaymentObj implements Serializable {
 
+    @JsonProperty("id")
+    private Integer id;
     @JsonProperty("name")
     private String name;
     @JsonProperty("category")
@@ -22,7 +24,8 @@ public class PaymentObj implements Serializable {
     private String date;
 
     @JsonCreator
-    public PaymentObj(String name, String category, String type, Integer amount, String notes, String recurring, String user, String date) {
+    public PaymentObj(Integer id, String name, String category, String type, Integer amount, String notes, String recurring, String user, String date) {
+        this.id = id;
         this.name = name;
         this.category = category;
         this.type = type;
@@ -31,6 +34,14 @@ public class PaymentObj implements Serializable {
         this.recurring = recurring;
         this.user = user;
         this.date = date;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
