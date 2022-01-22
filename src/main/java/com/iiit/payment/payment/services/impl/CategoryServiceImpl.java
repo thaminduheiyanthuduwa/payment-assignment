@@ -1,9 +1,6 @@
 package com.iiit.payment.payment.services.impl;
 
-import com.iiit.payment.payment.model.Category;
-import com.iiit.payment.payment.model.Login;
-import com.iiit.payment.payment.model.ResponseObj;
-import com.iiit.payment.payment.model.SignUp;
+import com.iiit.payment.payment.model.*;
 import com.iiit.payment.payment.repositories.ReadInfo;
 import com.iiit.payment.payment.repositories.SaveInfo;
 import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
@@ -55,19 +52,59 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity getAllCategories(String user) throws IOException {
+    public ResponseEntity getAllCategories(String cat) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
         ArrayList<Category> info = readInfo.readCategories();
 
         List<Category> filteredList = info.stream().filter(category -> category.getUser()
-                .equalsIgnoreCase(user)).collect(Collectors.toList());
+                .equalsIgnoreCase(cat)).collect(Collectors.toList());
 
         ResponseObj responseObj = new ResponseObj();
         responseObj.setStatus(HttpStatus.OK.value());
         responseObj.setMsg("Success");
         responseObj.setObject(filteredList);
         return new ResponseEntity<>(responseObj,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity deleteCategory(String category) throws IOException {
+
+        ReadInfo readInfo = new ReadInfoImpl();
+
+        ArrayList<PaymentObj> paymentObjs = new ArrayList<>();
+        ArrayList<Category> categoryArrayList = new ArrayList<>();
+
+        paymentObjs.addAll(readInfo.readBudget());
+        paymentObjs.addAll(readInfo.readTransaction());
+        categoryArrayList.addAll(readInfo.readCategories());
+
+        ResponseObj responseObj = new ResponseObj();
+
+        if (categoryArrayList.stream().filter(category1 -> category1
+                .getCategoryName().equalsIgnoreCase(category)).collect(Collectors.toList()).isEmpty()){
+            responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
+            responseObj.setMsg("Cannot delete the category. Category does not exists");
+            return new ResponseEntity<>(responseObj,HttpStatus.BAD_REQUEST);
+        }
+        else if (!paymentObjs.stream().filter(paymentObj -> paymentObj.getCategory()
+                .equalsIgnoreCase(category)).collect(Collectors.toList()).isEmpty()){
+
+            responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
+            responseObj.setMsg("Cannot delete the category. Already used in payment");
+            return new ResponseEntity<>(responseObj,HttpStatus.BAD_REQUEST);
+        }
+        else {
+            categoryArrayList.removeAll(categoryArrayList.stream().filter(category1 -> category1
+                    .getCategoryName().equalsIgnoreCase(category)).collect(Collectors.toList()));
+            SaveInfo saveInfo = new SaveInfoImpl();
+            saveInfo.saveCategoryDetails(categoryArrayList);
+            responseObj.setStatus(HttpStatus.OK.value());
+            responseObj.setMsg("Successfully deleted the category");
+            return new ResponseEntity<>(responseObj,HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
 }

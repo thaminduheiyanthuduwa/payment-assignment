@@ -9,6 +9,6 @@ public interface Payment {
 
     void save(List<PaymentObj> paymentObj) throws IOException;
 
-    List<PaymentObj> getPayment(String user, String category, String date) throws IOException;
+    List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException;
 
 }

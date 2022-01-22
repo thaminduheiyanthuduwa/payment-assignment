@@ -11,7 +11,7 @@ public interface PaymentService {
 
     ResponseEntity save(String user, PaymentObj paymentObj, String type, String date) throws IOException;
 
-    ResponseEntity getPayment(String user, String type, String date, String category) throws IOException;
+    ResponseEntity getPayment(String user, String paymentType, String date, String category, String type) throws IOException;
 
 
 }

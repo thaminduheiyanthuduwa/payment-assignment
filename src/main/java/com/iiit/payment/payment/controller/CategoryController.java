@@ -34,5 +34,13 @@ public class CategoryController {
 
     }
 
+    @RequestMapping(value = "/{category}" ,method = RequestMethod.DELETE ,headers="Accept=application/json")
+    public ResponseEntity deleteCategory(@PathVariable(value = "category") String category) throws IOException {
+
+        CategoryService categoryService = new CategoryServiceImpl();
+        return categoryService.deleteCategory(category);
+
+    }
+
 
 }

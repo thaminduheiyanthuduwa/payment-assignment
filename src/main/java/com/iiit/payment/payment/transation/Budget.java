@@ -22,7 +22,7 @@ public class Budget implements Payment {
     }
 
     @Override
-    public List<PaymentObj> getPayment(String user, String category, String date) throws IOException {
+    public List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
         ArrayList<PaymentObj> allTransaction = readInfo.readBudget();

@@ -48,13 +48,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public ResponseEntity getPayment(String user, String type, String date, String category) throws IOException {
+    public ResponseEntity getPayment(String user, String paymentState, String date, String category, String type) throws IOException {
 
         PaymentFactory paymentFactory = new PaymentFactory();
 
-        Payment paymentType = paymentFactory.getPayment(type);
+        Payment paymentType = paymentFactory.getPayment(paymentState);
 
-        List<PaymentObj> payment  = paymentType.getPayment(user, category, date);
+        List<PaymentObj> payment  = paymentType.getPayment(user, category, date, type);
 
         ResponseObj responseObj = new ResponseObj();
 

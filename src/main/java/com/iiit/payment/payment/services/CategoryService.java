@@ -11,6 +11,8 @@ public interface CategoryService {
 
     ResponseEntity saveCategory(String user, Category category) throws IOException;
 
-    ResponseEntity getAllCategories(String user) throws IOException;
+    ResponseEntity getAllCategories(String category) throws IOException;
+
+    ResponseEntity deleteCategory(String category) throws IOException;
 
 }

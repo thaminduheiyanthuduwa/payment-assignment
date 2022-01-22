@@ -27,16 +27,17 @@ public class TransactionController {
     }
 
 
-    @RequestMapping(value = "/{user_name}/{type}/{category}/{date}" ,method = RequestMethod.GET ,headers="Accept=application/json")
+    @RequestMapping(value = "/{user_name}" ,method = RequestMethod.GET ,headers="Accept=application/json")
     public ResponseEntity getPayment(@PathVariable(value = "user_name") String user,
-                                       @PathVariable(value = "type") String type,
-                                       @PathVariable(value = "category") String category,
-                                       @PathVariable(value = "date") String date) throws IOException {
+                                       @RequestParam(value = "payment_type") String paymentType,
+                                       @RequestParam(value = "type") String type,
+                                       @RequestParam(value = "category") String category,
+                                       @RequestParam(value = "date") String date) throws IOException {
 
 
         PaymentService paymentService = new PaymentServiceImpl();
 
-        return paymentService.getPayment(user, type, date, category);
+        return paymentService.getPayment(user, paymentType, date, category, type);
 
     }
 

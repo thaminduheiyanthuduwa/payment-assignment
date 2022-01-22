@@ -22,18 +22,23 @@ public class Transaction implements Payment {
     }
 
     @Override
-    public List<PaymentObj> getPayment(String user, String category, String date) throws IOException {
+    public List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
         ArrayList<PaymentObj> allTransaction = readInfo.readTransaction();
 
         ArrayList<PaymentObj> returnObj = new ArrayList<>();
 
-        if (category.equalsIgnoreCase("all")){
+        if (category.equalsIgnoreCase("all") && type.equalsIgnoreCase("all")){
             returnObj.addAll(allTransaction.stream().filter(paymentObj -> paymentObj.getDate().equalsIgnoreCase(date)
                     && paymentObj.getUser().equalsIgnoreCase(user)).collect(Collectors.toList()));
         }
-        else {
+        else if (category.equalsIgnoreCase("all") && !type.equalsIgnoreCase("all")){
+            returnObj.addAll(allTransaction.stream().filter(paymentObj -> paymentObj.getDate().equalsIgnoreCase(date)
+                    && paymentObj.getUser().equalsIgnoreCase(user)
+                    && paymentObj.getType().equalsIgnoreCase(type)).collect(Collectors.toList()));
+        }
+        else if (!category.equalsIgnoreCase("all") && type.equalsIgnoreCase("all")){
             returnObj.addAll(allTransaction.stream().filter(paymentObj -> paymentObj.getDate().equalsIgnoreCase(date)
                     && paymentObj.getUser().equalsIgnoreCase(user)
                     && paymentObj.getCategory().equalsIgnoreCase(category)).collect(Collectors.toList()));
