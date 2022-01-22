@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public interface CategoryService {
 
-    ResponseEntity saveCategory(Category category) throws IOException;
+    ResponseEntity saveCategory(String user, Category category) throws IOException;
 
-    ResponseEntity getAllCategories() throws IOException;
+    ResponseEntity getAllCategories(String user) throws IOException;
 
 }

@@ -15,12 +15,14 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public ResponseEntity saveCategory(Category category) throws IOException {
+    public ResponseEntity saveCategory(String user, Category category) throws IOException {
 
         ArrayList<Category> saveObj = new ArrayList<>();
 
@@ -30,7 +32,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         Boolean state;
 
-        state = info.stream().filter(obj -> obj.getCategoryName().equalsIgnoreCase(category.getCategoryName())).count() > 0;
+        state = info.stream().filter(obj -> obj.getCategoryName().equalsIgnoreCase(category.getCategoryName())
+                && obj.getUser().equalsIgnoreCase(category.getUser())).count() > 0;
 
         ResponseObj responseObj = new ResponseObj();
 
@@ -50,15 +53,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity getAllCategories() throws IOException {
+    public ResponseEntity getAllCategories(String user) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
         ArrayList<Category> info = readInfo.readCategories();
 
+        List<Category> filteredList = info.stream().filter(category -> category.getUser()
+                .equalsIgnoreCase(user)).collect(Collectors.toList());
+
         ResponseObj responseObj = new ResponseObj();
         responseObj.setStatus(HttpStatus.OK.value());
         responseObj.setMsg("Success");
-        responseObj.setObject(info);
+        responseObj.setObject(filteredList);
         return new ResponseEntity<>(responseObj,HttpStatus.OK);
     }
 
