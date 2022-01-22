@@ -40,4 +40,35 @@ public class LoginServiceImpl implements LoginService {
         }
 
     }
+
+    @Override
+    public ResponseEntity saveUser(SignUp user) throws IOException {
+
+        ArrayList<SignUp> saveObj = new ArrayList<>();
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<SignUp> info = readInfo.readSignUpDetails();
+        saveObj.addAll(info);
+
+        Boolean state;
+
+        state = info.stream().filter(signUp -> signUp.getUserName().equalsIgnoreCase(user.getUserName())
+                && signUp.getPassword().equalsIgnoreCase(user.getPassword())).count() > 0;
+
+        ResponseObj responseObj = new ResponseObj();
+
+        if (state){
+            responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
+            responseObj.setMsg("User Already Exists");
+            return new ResponseEntity<>(responseObj,HttpStatus.BAD_REQUEST);
+        }
+        else {
+            saveObj.add(user);
+            SaveInfo saveInfo = new SaveInfoImpl();
+            saveInfo.saveSignUpDetails(saveObj);
+            responseObj.setStatus(HttpStatus.OK.value());
+            responseObj.setMsg("Successfully Saved The User");
+            return new ResponseEntity<>(responseObj,HttpStatus.OK);
+        }
+    }
 }

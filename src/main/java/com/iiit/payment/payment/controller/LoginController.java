@@ -1,6 +1,7 @@
 package com.iiit.payment.payment.controller;
 
 import com.iiit.payment.payment.model.Login;
+import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.services.LoginService;
 import com.iiit.payment.payment.services.impl.LoginServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/login")
+@CrossOrigin(origins = "*")
 public class LoginController {
 
     @RequestMapping(value = "/{username}/{password}" ,method = RequestMethod.GET ,headers="Accept=application/json")
@@ -22,6 +24,14 @@ public class LoginController {
 
         LoginService loginService = new LoginServiceImpl();
         return loginService.getLoginState(login);
+
+    }
+
+    @RequestMapping(value = "/" ,method = RequestMethod.POST ,headers="Accept=application/json")
+    public ResponseEntity saveUserInfo(@RequestBody SignUp user) throws IOException {
+
+        LoginService loginService = new LoginServiceImpl();
+        return loginService.saveUser(user);
 
     }
 
