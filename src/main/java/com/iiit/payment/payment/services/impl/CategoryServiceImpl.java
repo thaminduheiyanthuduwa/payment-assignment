@@ -101,7 +101,7 @@ public class CategoryServiceImpl implements CategoryService {
             saveInfo.saveCategoryDetails(categoryArrayList);
             responseObj.setStatus(HttpStatus.OK.value());
             responseObj.setMsg("Successfully deleted the category");
-            return new ResponseEntity<>(responseObj,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(responseObj,HttpStatus.OK);
         }
 
 
