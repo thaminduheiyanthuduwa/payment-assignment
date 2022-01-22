@@ -19,7 +19,6 @@ public class LoginController {
     public ResponseEntity getLoginState(@PathVariable("username") String user
             , @PathVariable("password") String password) throws IOException {
 
-
         Login login = new Login(user, password);
 
         LoginService loginService = new LoginServiceImpl();
@@ -32,8 +31,6 @@ public class LoginController {
 
         LoginService loginService = new LoginServiceImpl();
         return loginService.saveUser(user);
-
     }
-
 
 }

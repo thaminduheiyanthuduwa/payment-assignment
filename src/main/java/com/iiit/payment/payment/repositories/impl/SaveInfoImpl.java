@@ -1,5 +1,6 @@
 package com.iiit.payment.payment.repositories.impl;
 
+import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.repositories.SaveInfo;
 
@@ -25,7 +26,20 @@ public class SaveInfoImpl implements SaveInfo {
 
     }
 
+    @Override
+    public void saveCategoryDetails(List<Category> categories) throws IOException {
 
+        if (!categories.isEmpty()) {
+            FileOutputStream fileOutputStream = new FileOutputStream("category.txt");//save file to write objects
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            for (Category categoryTemp : categories) {
+                objectOutputStream.writeObject(categoryTemp);
+            }
+            objectOutputStream.close();
+            System.out.println("Successfully Saved");
+        }
+
+    }
 
 
 }

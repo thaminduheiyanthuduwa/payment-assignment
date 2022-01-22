@@ -1,5 +1,6 @@
 package com.iiit.payment.payment.repositories.impl;
 
+import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.Login;
 import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.repositories.ReadInfo;
@@ -36,6 +37,34 @@ public class ReadInfoImpl implements ReadInfo {
 
         return signUpList;
 
+    }
+
+    @Override
+    public ArrayList<Category> readCategories() throws IOException {
+
+        ArrayList<Category> categoryArrayList = new ArrayList<>();
+
+        try {
+
+            FileInputStream fileInputStream = new FileInputStream("category.txt");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            boolean state = false;
+            while (state != true) {
+                try {
+
+                    Category category = (Category) objectInputStream.readObject();
+                    categoryArrayList.add(category);
+
+                } catch (Exception e) {
+                    state = true;
+                }
+            }
+            objectInputStream.close();
+        } catch (Exception e) {
+
+        }
+
+        return categoryArrayList;
     }
 
 }
