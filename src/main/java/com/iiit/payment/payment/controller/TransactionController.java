@@ -39,7 +39,7 @@ public class TransactionController {
         return paymentService.getPayment(user, paymentType, date, category, type);
     }
 
-    @RequestMapping(value = "/edit_payment/{user_name}/{type}/{id}" ,method = RequestMethod.POST ,headers="Accept=application/json")
+    @RequestMapping(value = "/edit/{user_name}/{type}/{id}" ,method = RequestMethod.POST ,headers="Accept=application/json")
     public ResponseEntity editPayment(@PathVariable(value = "user_name") String user,
                                       @PathVariable(value = "type") String type,
                                       @PathVariable(value = "id") Integer id,
@@ -49,7 +49,28 @@ public class TransactionController {
         PaymentService paymentService = new PaymentServiceImpl();
 
         return paymentService.edit(user, paymentObj, type, id);
+    }
 
+    @RequestMapping(value = "/delete/{user_name}/{type}/{id}" ,method = RequestMethod.DELETE ,headers="Accept=application/json")
+    public ResponseEntity deletePayment(@PathVariable(value = "user_name") String user,
+                                      @PathVariable(value = "type") String type,
+                                      @PathVariable(value = "id") Integer id) throws IOException {
+
+
+        PaymentService paymentService = new PaymentServiceImpl();
+
+        return paymentService.delete(user, type, id);
+    }
+
+    @RequestMapping(value = "/total/{user_name}/{type}/{date}" ,method = RequestMethod.GET ,headers="Accept=application/json")
+    public ResponseEntity getTotalValues(@PathVariable(value = "user_name") String user,
+                                        @PathVariable(value = "type") String type,
+                                        @PathVariable(value = "date") String date) throws IOException {
+
+
+        PaymentService paymentService = new PaymentServiceImpl();
+
+        return paymentService.getTotalValues(user, type, date);
     }
 
 }

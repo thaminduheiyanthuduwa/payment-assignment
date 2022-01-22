@@ -2,6 +2,7 @@ package com.iiit.payment.payment.services.impl;
 
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.ResponseObj;
+import com.iiit.payment.payment.model.TotalPayments;
 import com.iiit.payment.payment.repositories.ReadInfo;
 import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
 import com.iiit.payment.payment.services.PaymentService;
@@ -55,9 +56,50 @@ public class PaymentServiceImpl implements PaymentService {
         }
         else {
             responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
-            responseObj.setMsg("Fail");
+            responseObj.setMsg("No payment found for id "+id);
             return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
         }
+
+    }
+
+    @Override
+    public ResponseEntity delete(String user, String type, Integer id) throws IOException {
+
+        PaymentFactory paymentFactory = new PaymentFactory();
+
+        Payment paymentType = paymentFactory.getPayment(type);
+
+        Boolean state = paymentType.delete(user, type, id);
+
+        ResponseObj responseObj = new ResponseObj();
+
+        if (state) {
+            responseObj.setStatus(HttpStatus.OK.value());
+            responseObj.setMsg("Success");
+            return new ResponseEntity<>(responseObj, HttpStatus.OK);
+        }
+        else {
+            responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
+            responseObj.setMsg("No payment found for id "+id);
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity getTotalValues(String user, String type, String date) throws IOException {
+
+        PaymentFactory paymentFactory = new PaymentFactory();
+
+        Payment paymentType = paymentFactory.getPayment(type);
+
+        TotalPayments state = paymentType.getTotalValues(user, date);
+
+        ResponseObj responseObj = new ResponseObj();
+
+        responseObj.setStatus(HttpStatus.OK.value());
+        responseObj.setMsg("Success");
+        responseObj.setObject(state);
+        return new ResponseEntity<>(responseObj, HttpStatus.OK);
 
     }
 

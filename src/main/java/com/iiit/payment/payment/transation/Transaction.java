@@ -1,6 +1,7 @@
 package com.iiit.payment.payment.transation;
 
 import com.iiit.payment.payment.model.PaymentObj;
+import com.iiit.payment.payment.model.TotalPayments;
 import com.iiit.payment.payment.repositories.ReadInfo;
 import com.iiit.payment.payment.repositories.SaveInfo;
 import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
@@ -43,7 +44,7 @@ public class Transaction implements Payment {
         ArrayList<PaymentObj> info = readInfo.readTransaction();
 
         List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
-                .equals(id)).collect(Collectors.toList());
+                .equals(id) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
 
         if (obj.isEmpty())
             return false;
@@ -59,6 +60,43 @@ public class Transaction implements Payment {
 
             return true;
         }
+    }
+
+    @Override
+    public Boolean delete(String user, String type, Integer id) throws IOException {
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<PaymentObj> info = readInfo.readTransaction();
+
+        List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
+                .equals(id) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
+
+        if (obj.isEmpty())
+            return false;
+        else {
+            info.remove(obj.get(0));
+            SaveInfo saveInfo = new SaveInfoImpl();
+            saveInfo.saveBudgetDetails(info);
+
+            return true;
+        }
+    }
+
+    @Override
+    public TotalPayments getTotalValues(String user, String date) throws IOException {
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<PaymentObj> info = readInfo.readTransaction();
+
+        double sumValue = info.stream().mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
+
+        double income = info.stream().filter(paymentObj -> paymentObj.getType().equalsIgnoreCase("income")).mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
+
+        double expense = info.stream().filter(paymentObj -> paymentObj.getType().equalsIgnoreCase("expense")).mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
+
+        TotalPayments totalPayments = new TotalPayments(sumValue, income, expense);
+
+        return totalPayments;
     }
 
     @Override

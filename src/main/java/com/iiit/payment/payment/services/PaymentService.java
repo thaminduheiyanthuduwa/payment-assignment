@@ -13,6 +13,10 @@ public interface PaymentService {
 
     ResponseEntity edit(String user, PaymentObj paymentObj, String type, Integer id) throws IOException;
 
+    ResponseEntity delete(String user, String type, Integer id) throws IOException;
+
+    ResponseEntity getTotalValues(String user, String type, String date) throws IOException;
+
     ResponseEntity getPayment(String user, String paymentType, String date, String category, String type) throws IOException;
 
 
