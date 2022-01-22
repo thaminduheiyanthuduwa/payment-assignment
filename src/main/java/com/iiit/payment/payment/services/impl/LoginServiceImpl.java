@@ -10,10 +10,12 @@ import com.iiit.payment.payment.repositories.impl.SaveInfoImpl;
 import com.iiit.payment.payment.services.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+@Service
 public class LoginServiceImpl implements LoginService {
 
     public ResponseEntity getLoginState(Login login) throws IOException {

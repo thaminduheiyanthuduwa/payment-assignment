@@ -1,10 +1,13 @@
 package com.iiit.payment.payment.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class Login {
 
     private String userName;
     private String password;
 
+    @JsonCreator
     public Login(String userName, String password) {
         this.userName = userName;
         this.password = password;
