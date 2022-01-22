@@ -14,11 +14,51 @@ import java.util.stream.Collectors;
 public class Transaction implements Payment {
 
     @Override
-    public void save(List<PaymentObj> paymentObj) throws IOException {
+    public void save(String user, PaymentObj paymentObj, String type, String date) throws IOException {
+
+        ArrayList<PaymentObj> paymentObjs = new ArrayList<>();
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<PaymentObj> info = readInfo.readTransaction();
+
+        Integer id = info.stream().map(PaymentObj::getId).collect(Collectors.toList())
+                .stream().mapToInt(v->v).max().orElse(-1);
+
+        paymentObjs.addAll(info);
+
+        paymentObj.setUser(user);
+        paymentObj.setDate(date);
+        paymentObj.setId(++id);
+        paymentObjs.add(paymentObj);
 
         SaveInfo saveInfo = new SaveInfoImpl();
-        saveInfo.saveTransactionDetails(paymentObj);
+        saveInfo.saveTransactionDetails(paymentObjs);
 
+    }
+
+    @Override
+    public Boolean edit(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<PaymentObj> info = readInfo.readTransaction();
+
+        List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
+                .equals(id)).collect(Collectors.toList());
+
+        if (obj.isEmpty())
+            return false;
+        else {
+            info.remove(obj.get(0));
+            paymentObj.setUser(obj.get(0).getUser());
+            paymentObj.setDate(obj.get(0).getDate());
+            paymentObj.setId(obj.get(0).getId());
+            info.add(paymentObj);
+
+            SaveInfo saveInfo = new SaveInfoImpl();
+            saveInfo.saveBudgetDetails(info);
+
+            return true;
+        }
     }
 
     @Override

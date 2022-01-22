@@ -23,27 +23,41 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ResponseEntity save(String user, PaymentObj paymentObj, String type, String date) throws IOException {
 
-        ArrayList<PaymentObj> paymentObjs = new ArrayList<>();
-
-        ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<PaymentObj> info = readInfo.readTransaction();
-        paymentObjs.addAll(info);
-
-        paymentObj.setUser(user);
-        paymentObj.setDate(date);
-        paymentObjs.add(paymentObj);
-
         PaymentFactory paymentFactory = new PaymentFactory();
 
         Payment paymentType = paymentFactory.getPayment(type);
 
-        paymentType.save(paymentObjs);
+        paymentType.save(user, paymentObj, type, date);
 
         ResponseObj responseObj = new ResponseObj();
 
         responseObj.setStatus(HttpStatus.OK.value());
         responseObj.setMsg("Success");
         return new ResponseEntity<>(responseObj, HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity edit(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
+
+        PaymentFactory paymentFactory = new PaymentFactory();
+
+        Payment paymentType = paymentFactory.getPayment(type);
+
+        Boolean state = paymentType.edit(user, paymentObj, type, id);
+
+        ResponseObj responseObj = new ResponseObj();
+
+        if (state) {
+            responseObj.setStatus(HttpStatus.OK.value());
+            responseObj.setMsg("Success");
+            return new ResponseEntity<>(responseObj, HttpStatus.OK);
+        }
+        else {
+            responseObj.setStatus(HttpStatus.BAD_REQUEST.value());
+            responseObj.setMsg("Fail");
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
 
     }
 
