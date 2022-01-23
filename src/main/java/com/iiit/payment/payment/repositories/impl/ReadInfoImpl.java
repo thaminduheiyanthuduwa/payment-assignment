@@ -5,6 +5,8 @@ import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.repositories.ReadInfo;
 import com.iiit.payment.payment.transation.Budget;
+import com.iiit.payment.payment.transation.Expense;
+import com.iiit.payment.payment.transation.Income;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -68,19 +70,19 @@ public class ReadInfoImpl implements ReadInfo {
     }
 
     @Override
-    public ArrayList<PaymentObj> readTransaction() throws IOException {
+    public ArrayList<Income> readIncome() throws IOException {
 
-        ArrayList<PaymentObj> transactions = new ArrayList<>();
+        ArrayList<Income> transactions = new ArrayList<>();
 
         try {
 
-            FileInputStream fileInputStream = new FileInputStream("transaction.txt");
+            FileInputStream fileInputStream = new FileInputStream("income.txt");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             boolean state = false;
             while (state != true) {
                 try {
 
-                    PaymentObj transaction = (PaymentObj) objectInputStream.readObject();
+                    Income transaction = (Income) objectInputStream.readObject();
                     transactions.add(transaction);
 
                 } catch (Exception e) {
@@ -93,6 +95,36 @@ public class ReadInfoImpl implements ReadInfo {
         }
 
         return transactions;
+
+    }
+
+    @Override
+    public ArrayList<Expense> readExpenses() throws IOException {
+
+        ArrayList<Expense> transactions = new ArrayList<>();
+
+        try {
+
+            FileInputStream fileInputStream = new FileInputStream("expenses.txt");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            boolean state = false;
+            while (state != true) {
+                try {
+
+                    Expense transaction = (Expense) objectInputStream.readObject();
+                    transactions.add(transaction);
+
+                } catch (Exception e) {
+                    state = true;
+                }
+            }
+            objectInputStream.close();
+        } catch (Exception e) {
+
+        }
+
+        return transactions;
+
     }
 
     @Override

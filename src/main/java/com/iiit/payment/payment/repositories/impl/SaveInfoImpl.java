@@ -4,8 +4,8 @@ import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.repositories.SaveInfo;
-import com.iiit.payment.payment.transation.Budget;
-
+import com.iiit.payment.payment.transation.Expense;
+import com.iiit.payment.payment.transation.Income;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -42,19 +42,34 @@ public class SaveInfoImpl implements SaveInfo {
     }
 
     @Override
-    public void saveTransactionDetails(List<PaymentObj> transactions) throws IOException {
+    public void saveIncome(List<Income> transactions) throws IOException {
 
         if (!transactions.isEmpty()) {
-            FileOutputStream fileOutputStream = new FileOutputStream("transaction.txt");//save file to write objects
+            FileOutputStream fileOutputStream = new FileOutputStream("income.txt");//save file to write objects
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            for (PaymentObj transaction : transactions) {
+            for (Income transaction : transactions) {
                 objectOutputStream.writeObject(transaction);
             }
             objectOutputStream.close();
             System.out.println("Successfully Saved");
         }
-
     }
+
+    @Override
+    public void saveExpenses(List<Expense> transactions) throws IOException {
+
+        if (!transactions.isEmpty()) {
+            FileOutputStream fileOutputStream = new FileOutputStream("expenses.txt");//save file to write objects
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            for (Expense transaction : transactions) {
+                objectOutputStream.writeObject(transaction);
+            }
+            objectOutputStream.close();
+            System.out.println("Successfully Saved");
+        }
+    }
+
+
 
     @Override
     public void saveBudgetDetails(List<PaymentObj> budgets) throws IOException {

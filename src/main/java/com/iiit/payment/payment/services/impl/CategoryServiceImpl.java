@@ -76,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
         ArrayList<Category> categoryArrayList = new ArrayList<>();
 
         paymentObjs.addAll(readInfo.readBudget());
-        paymentObjs.addAll(readInfo.readTransaction());
+//        paymentObjs.addAll(readInfo.readTransaction());
         categoryArrayList.addAll(readInfo.readCategories());
 
         ResponseObj responseObj = new ResponseObj();

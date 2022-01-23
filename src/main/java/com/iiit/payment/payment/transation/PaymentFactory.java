@@ -9,7 +9,7 @@ public class PaymentFactory {
         }
         if(type.equalsIgnoreCase("transaction")){
 
-            return new Transaction();
+            return new TransactionImpl(null);
 
         }
         else if (type.equalsIgnoreCase("budget")) {
