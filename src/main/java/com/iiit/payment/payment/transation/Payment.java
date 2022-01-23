@@ -17,5 +17,4 @@ public interface Payment {
     TotalPayments getTotalValues(String user, String date) throws IOException;
 
     List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException;
-
 }

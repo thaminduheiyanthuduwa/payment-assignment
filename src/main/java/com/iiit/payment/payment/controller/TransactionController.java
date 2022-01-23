@@ -73,4 +73,13 @@ public class TransactionController {
         return paymentService.getTotalValues(user, type, date);
     }
 
+    @RequestMapping(value = "/barchart/{user_name}/{date}" ,method = RequestMethod.GET ,headers="Accept=application/json")
+    public ResponseEntity generateCharts(@PathVariable(value = "user_name") String user,
+                                         @PathVariable(value = "date") String date) throws IOException {
+
+
+        PaymentService paymentService = new PaymentServiceImpl();
+
+        return paymentService.generateCharts(user, date);
+    }
 }
