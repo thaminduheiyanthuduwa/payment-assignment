@@ -1,14 +1,12 @@
 package com.iiit.payment.payment.services.impl;
 
+import com.iiit.payment.payment.model.ChartObj;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.ResponseObj;
 import com.iiit.payment.payment.model.TotalPayments;
-import com.iiit.payment.payment.repositories.ReadInfo;
-import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
 import com.iiit.payment.payment.services.PaymentService;
 import com.iiit.payment.payment.transation.Payment;
 import com.iiit.payment.payment.transation.PaymentFactory;
-import com.iiit.payment.payment.transation.Transaction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -120,4 +118,40 @@ public class PaymentServiceImpl implements PaymentService {
         return new ResponseEntity<>(responseObj, HttpStatus.OK);
 
     }
+
+    @Override
+    public ResponseEntity generateCharts(String user, String date) throws IOException {
+        PaymentFactory paymentFactory = new PaymentFactory();
+
+        Payment paymentTypeTransactions = paymentFactory.getPayment("transaction");
+
+        List<PaymentObj> paymentExpense  = paymentTypeTransactions.getPayment(user, "all",date , "all");
+
+        Payment paymentTypeBudget = paymentFactory.getPayment("budget");
+
+        List<PaymentObj> paymentBudget  = paymentTypeBudget.getPayment(user, "all",date , "all");
+        List<ChartObj> chartObj =  new ArrayList<>();
+        if(paymentBudget.size()!=0){
+            for(PaymentObj budget : paymentBudget) {
+                double sum = paymentExpense.stream().filter(o -> o.getCategory().equalsIgnoreCase(budget.getCategory()) ).mapToDouble(o -> o.getAmount()).sum();
+                chartObj.add(new ChartObj(budget.getCategory(),budget.getAmount(),sum));
+            }
+        }else{
+            for(PaymentObj expense : paymentExpense) {
+                double sum = paymentExpense.stream().filter(o -> o.getCategory().equalsIgnoreCase(expense.getCategory()) ).mapToDouble(o -> o.getAmount()).sum();
+
+                chartObj.add(new ChartObj(expense.getCategory(),0.0,sum));
+            }
+        }
+
+
+        ResponseObj responseObj = new ResponseObj();
+
+        responseObj.setStatus(HttpStatus.OK.value());
+        responseObj.setMsg("Success");
+        responseObj.setObject(chartObj);
+        return new ResponseEntity<>(responseObj, HttpStatus.OK);
+
+    }
+
 }
