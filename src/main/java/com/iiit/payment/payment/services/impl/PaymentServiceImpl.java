@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -122,6 +125,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ResponseEntity generateCharts(String user, String date) throws IOException {
         PaymentFactory paymentFactory = new PaymentFactory();
+        LocalDateTime futureDate = LocalDateTime.now().plusMonths(1);
 
         Payment paymentTypeTransactions = paymentFactory.getPayment("transaction");
 
@@ -153,5 +157,4 @@ public class PaymentServiceImpl implements PaymentService {
         return new ResponseEntity<>(responseObj, HttpStatus.OK);
 
     }
-
 }

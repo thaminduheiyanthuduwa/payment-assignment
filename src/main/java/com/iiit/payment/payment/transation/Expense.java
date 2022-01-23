@@ -3,6 +3,8 @@ package com.iiit.payment.payment.transation;
 import com.iiit.payment.payment.model.Category;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 
 public class Expense implements CreateType, Serializable {
@@ -16,9 +18,10 @@ public class Expense implements CreateType, Serializable {
     private String recurring;
     private String user;
     private String date;
+    private LocalDateTime dateTime;
 
     public Expense(Integer id, String name, String category, String type, Double amount,
-                   String notes, String recurring, String user, String date) {
+                   String notes, String recurring, String user, String date, LocalDateTime dateTime) {
         this.id = id;
         this.name = name;
         this.category = new Category(category,user);
@@ -28,6 +31,7 @@ public class Expense implements CreateType, Serializable {
         this.recurring = recurring;
         this.user = user;
         this.date = date;
+        this.dateTime = dateTime;
     }
 
     public Integer getId() {
@@ -102,4 +106,11 @@ public class Expense implements CreateType, Serializable {
         this.date = date;
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 }

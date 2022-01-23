@@ -8,7 +8,11 @@ import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
 import com.iiit.payment.payment.repositories.impl.SaveInfoImpl;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +45,7 @@ public class TransactionImpl extends Transaction {
             TransactionImpl income = new TransactionImpl(new Income(++max, paymentObj.getName(),
                     paymentObj.getCategory(), paymentObj.getType(),
                     paymentObj.getAmount(), paymentObj.getNotes(),
-                    paymentObj.getRecurring(), user, date));
+                    paymentObj.getRecurring(), user, date, LocalDateTime.now()));
 
             obj.add((Income) income.createType);
 
@@ -68,7 +72,7 @@ public class TransactionImpl extends Transaction {
             TransactionImpl expenses = new TransactionImpl(new Expense(++max, paymentObj.getName(),
                     paymentObj.getCategory(), paymentObj.getType(),
                     paymentObj.getAmount(), paymentObj.getNotes(),
-                    paymentObj.getRecurring(), user, date));
+                    paymentObj.getRecurring(), user, date, LocalDateTime.now()));
 
             obj.add((Expense) expenses.createType);
 
@@ -99,10 +103,10 @@ public class TransactionImpl extends Transaction {
             else {
                 obj.remove(obj1.get(0));
 
-                TransactionImpl income = new TransactionImpl(new Income(++id, paymentObj.getName(),
+                TransactionImpl income = new TransactionImpl(new Income(id, paymentObj.getName(),
                         paymentObj.getCategory(), paymentObj.getType(),
                         paymentObj.getAmount(), paymentObj.getNotes(),
-                        paymentObj.getRecurring(), user, obj1.get(0).getDate()));
+                        paymentObj.getRecurring(), user, obj1.get(0).getDate(), obj1.get(0).getDateTime()));
 
                 obj.add((Income) income.createType);
 
@@ -128,10 +132,10 @@ public class TransactionImpl extends Transaction {
             else {
                 obj.remove(obj1.get(0));
 
-                TransactionImpl income = new TransactionImpl(new Expense(++id, paymentObj.getName(),
+                TransactionImpl income = new TransactionImpl(new Expense(id, paymentObj.getName(),
                         paymentObj.getCategory(), paymentObj.getType(),
                         paymentObj.getAmount(), paymentObj.getNotes(),
-                        paymentObj.getRecurring(), user, obj1.get(0).getDate()));
+                        paymentObj.getRecurring(), user, obj1.get(0).getDate(), obj1.get(0).getDateTime()));
 
                 obj.add((Expense) income.createType);
 
@@ -191,23 +195,24 @@ public class TransactionImpl extends Transaction {
     @Override
     public TotalPayments getTotalValues(String user, String date) throws IOException {
 
-//        ReadInfo readInfo = new ReadInfoImpl();
-//        ArrayList<PaymentObj> info = readInfo.readTransaction();
-//
-//        double sumValue = info.stream().mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
-//
-//        double income = info.stream().filter(paymentObj -> paymentObj.getType().equalsIgnoreCase("income")).mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
-//
-//        double expense = info.stream().filter(paymentObj -> paymentObj.getType().equalsIgnoreCase("expense")).mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
-//
-        TotalPayments totalPayments = new TotalPayments(1d, 1d, 1d);
-//
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<Income> inc = readInfo.readIncome();
+        ArrayList<Expense> inc2 = readInfo.readExpenses();
+
+        double income = inc.stream().mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
+
+        double expense = inc2.stream().mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
+
+        TotalPayments totalPayments = new TotalPayments(income+expense, income, expense);
+
         return totalPayments;
 
     }
 
     @Override
     public List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException {
+
+        addRecurring();
 
         ArrayList<Income> obj = new ArrayList<>();
         ArrayList<Expense> obj2 = new ArrayList<>();
@@ -248,6 +253,71 @@ public class TransactionImpl extends Transaction {
         }
 
         return returnObj;
+    }
+
+    private void addRecurring() throws IOException {
+
+        ArrayList<Income> obj = new ArrayList<>();
+        ArrayList<Expense> obj2 = new ArrayList<>();
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<Income> inc = readInfo.readIncome();
+        ArrayList<Expense> inc2 = readInfo.readExpenses();
+        obj.addAll(inc);
+        obj2.addAll(inc2);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Income x : obj){
+
+            if (x.getRecurring().equalsIgnoreCase("minute")) {
+
+                LocalDateTime current = x.getDateTime();
+
+                Duration duration = Duration.between(current,now);
+
+                LocalDateTime future = current.plusMinutes(1);
+
+                if (duration.toMinutes() < 60 && Duration.between(current.plusMinutes(1),now).toMinutes() >  -1){
+
+                    edit(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                            x.getNotes(), "none", x.getUser(), x.getDate()), "", x.getId());
+
+                    save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                            x.getNotes(), "minute", x.getUser(), ""), "",
+                            String.valueOf(future.getYear())+"-"+ (future.getMonthValue()<10 ?
+                                    ("0"+String.valueOf(future.getMonthValue())):String.valueOf(future.getMonthValue())));
+
+                }
+            }
+        }
+        for (Expense x : obj2){
+
+            if (x.getRecurring().equalsIgnoreCase("minute")) {
+
+                Duration duration = Duration.between(x.getDateTime(),now);
+
+                LocalDateTime future = now.plusMinutes(1);
+
+                if (duration.toMinutes() < 60 && Duration.between(future,now).toMinutes() <  1){
+
+                    edit(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                            x.getNotes(), "none", x.getUser(), x.getDate()), "", x.getId());
+
+                    save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                    x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                    x.getNotes(), "minute", x.getUser(), ""), "",
+                            String.valueOf(future.getYear())+"-"+ (future.getMonthValue()<10 ?
+                                    ("0"+String.valueOf(future.getMonthValue())):String.valueOf(future.getMonthValue())));
+
+                }
+            }
+
+        }
+
     }
 
 }
