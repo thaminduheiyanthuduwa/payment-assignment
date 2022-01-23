@@ -56,7 +56,7 @@ public class Transaction implements Payment {
             info.add(paymentObj);
 
             SaveInfo saveInfo = new SaveInfoImpl();
-            saveInfo.saveBudgetDetails(info);
+            saveInfo.saveTransactionDetails(info);
 
             return true;
         }
