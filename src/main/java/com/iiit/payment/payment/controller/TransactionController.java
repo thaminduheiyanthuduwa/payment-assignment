@@ -82,4 +82,14 @@ public class TransactionController {
 
         return paymentService.generateCharts(user, date);
     }
+
+    @RequestMapping(value = "/piechart/{user_name}/{date}" ,method = RequestMethod.GET ,headers="Accept=application/json")
+    public ResponseEntity overallSpendingsAndEarnings(@PathVariable(value = "user_name") String user,
+                                         @PathVariable(value = "date") String date) throws IOException {
+
+
+        PaymentService paymentService = new PaymentServiceImpl();
+
+        return paymentService.overallChart(user, date);
+    }
 }

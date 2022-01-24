@@ -157,4 +157,29 @@ public class PaymentServiceImpl implements PaymentService {
         return new ResponseEntity<>(responseObj, HttpStatus.OK);
 
     }
+
+    @Override
+    public ResponseEntity overallChart(String user, String date) throws IOException {
+        PaymentFactory paymentFactory = new PaymentFactory();
+
+        Payment paymentTypeTransaction = paymentFactory.getPayment("transaction");
+
+
+        TotalPayments state = paymentTypeTransaction.getTotalValues(user, date);
+
+        Payment paymentTypeBudget = paymentFactory.getPayment("budget");
+
+
+        TotalPayments stateBudget = paymentTypeBudget.getTotalValues(user, date);
+
+        ChartObj chartObj = new ChartObj(null,stateBudget.getTotal(), state.getTotalExpenses());
+
+        ResponseObj responseObj = new ResponseObj();
+
+        responseObj.setStatus(HttpStatus.OK.value());
+        responseObj.setMsg("Success");
+        responseObj.setObject(chartObj);
+        return new ResponseEntity<>(responseObj, HttpStatus.OK);
+    }
+
 }
