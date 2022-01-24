@@ -1,4 +1,4 @@
-package com.iiit.payment.payment.transation;
+package com.iiit.payment.payment.transaction;
 
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.TotalPayments;

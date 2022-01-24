@@ -2,14 +2,11 @@ package com.iiit.payment.payment.repositories;
 
 import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
-import com.iiit.payment.payment.model.PaymentObj;
-import com.iiit.payment.payment.transation.Budget;
-import com.iiit.payment.payment.transation.BudgetEntity;
-import com.iiit.payment.payment.transation.Expense;
-import com.iiit.payment.payment.transation.Income;
+import com.iiit.payment.payment.transaction.Budget;
+import com.iiit.payment.payment.transaction.Expense;
+import com.iiit.payment.payment.transaction.Income;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface SaveInfo {
@@ -22,7 +19,7 @@ public interface SaveInfo {
 
     void saveExpenses(List<Expense> transactions) throws IOException;
 
-    void saveBudgetDetails(List<BudgetEntity> budgets) throws IOException;
+    void saveBudgetDetails(List<Budget> budgets) throws IOException;
 
 
 }

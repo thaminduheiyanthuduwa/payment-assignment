@@ -5,17 +5,15 @@ import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.ResponseObj;
 import com.iiit.payment.payment.model.TotalPayments;
 import com.iiit.payment.payment.services.PaymentService;
-import com.iiit.payment.payment.transation.Payment;
-import com.iiit.payment.payment.transation.PaymentFactory;
+import com.iiit.payment.payment.transaction.Payment;
+import com.iiit.payment.payment.transaction.PaymentFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service

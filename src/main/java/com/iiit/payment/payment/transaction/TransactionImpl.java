@@ -1,4 +1,4 @@
-package com.iiit.payment.payment.transation;
+package com.iiit.payment.payment.transaction;
 
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.TotalPayments;
@@ -10,9 +10,7 @@ import com.iiit.payment.payment.repositories.impl.SaveInfoImpl;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

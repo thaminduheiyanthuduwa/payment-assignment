@@ -1,4 +1,4 @@
-package com.iiit.payment.payment.transation;
+package com.iiit.payment.payment.transaction;
 
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.TotalPayments;
@@ -14,18 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Budget implements Payment {
+public class BudgetImpl implements Payment {
 
     @Override
     public void save(String user, PaymentObj paymentObj, String type, String date, LocalDateTime localDateTime) throws IOException {
 
-        ArrayList<BudgetEntity> paymentObjs = new ArrayList<>();
+        ArrayList<Budget> paymentObjs = new ArrayList<>();
 
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<BudgetEntity> info = readInfo.readBudget();
+        ArrayList<Budget> info = readInfo.readBudget();
 
-        Integer id = info.stream().map(BudgetEntity::getId).collect(Collectors.toList())
+        Integer id = info.stream().map(Budget::getId).collect(Collectors.toList())
                 .stream().mapToInt(v->v).max().orElse(-1);
 
         paymentObjs.addAll(info);
@@ -33,7 +33,7 @@ public class Budget implements Payment {
         paymentObj.setUser(user);
         paymentObj.setDate(date);
         paymentObj.setId(++id);
-        paymentObjs.add(new BudgetEntity(paymentObj.getId(), paymentObj.getName(),
+        paymentObjs.add(new Budget(paymentObj.getId(), paymentObj.getName(),
                 paymentObj.getCategory(), paymentObj.getType(),
                 paymentObj.getAmount(), paymentObj.getNotes(),
                 paymentObj.getRecurring(), paymentObj.getUser(), paymentObj.getDate(), localDateTime));
@@ -47,11 +47,11 @@ public class Budget implements Payment {
     public Boolean edit(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<BudgetEntity> info = readInfo.readBudget();
+        ArrayList<Budget> info = readInfo.readBudget();
 
 
         Integer finalId = id;
-        List<BudgetEntity> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
+        List<Budget> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
                 .equals(finalId) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
 
         if (obj.isEmpty())
@@ -61,7 +61,7 @@ public class Budget implements Payment {
             paymentObj.setUser(obj.get(0).getUser());
             paymentObj.setDate(obj.get(0).getDate());
             paymentObj.setId(obj.get(0).getId());
-            info.add(new BudgetEntity(paymentObj.getId(), paymentObj.getName(),
+            info.add(new Budget(paymentObj.getId(), paymentObj.getName(),
                     paymentObj.getCategory(), paymentObj.getType(),
                     paymentObj.getAmount(), paymentObj.getNotes(),
                     paymentObj.getRecurring(), paymentObj.getUser(),
@@ -78,11 +78,11 @@ public class Budget implements Payment {
     public Boolean delete(String user, String type, Integer id) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<BudgetEntity> info = readInfo.readBudget();
+        ArrayList<Budget> info = readInfo.readBudget();
 
 
         Integer finalId = id;
-        List<BudgetEntity> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
+        List<Budget> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
                 .equals(finalId) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
 
         if (obj.isEmpty())
@@ -100,7 +100,7 @@ public class Budget implements Payment {
     public TotalPayments getTotalValues(String user, String date) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<BudgetEntity> info = readInfo.readBudget();
+        ArrayList<Budget> info = readInfo.readBudget();
 
         double sumValue = info.stream().mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
 
@@ -116,9 +116,9 @@ public class Budget implements Payment {
         addRecurring();
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<BudgetEntity> allTransaction = readInfo.readBudget();
+        ArrayList<Budget> allTransaction = readInfo.readBudget();
 
-        ArrayList<BudgetEntity> returnObj = new ArrayList<>();
+        ArrayList<Budget> returnObj = new ArrayList<>();
         ArrayList<PaymentObj> finalObj = new ArrayList<>();
 
         if (category.equalsIgnoreCase("all")){
@@ -131,7 +131,7 @@ public class Budget implements Payment {
                     && paymentObj.getCategory().getCategoryName().equalsIgnoreCase(category)).collect(Collectors.toList()));
         }
 
-        for (BudgetEntity ob : returnObj){
+        for (Budget ob : returnObj){
 
             finalObj.add(new PaymentObj(ob.getId(), ob.getName(),
                     ob.getCategory().getCategoryName(), ob.getType(), ob.getAmount(),
@@ -145,11 +145,11 @@ public class Budget implements Payment {
     private void addRecurring() throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<BudgetEntity> allTransaction = readInfo.readBudget();
+        ArrayList<Budget> allTransaction = readInfo.readBudget();
 
         LocalDateTime now = LocalDateTime.now();
 
-        for (BudgetEntity x : allTransaction){
+        for (Budget x : allTransaction){
 
             if (x.getRecurring().equalsIgnoreCase("minute")) {
 

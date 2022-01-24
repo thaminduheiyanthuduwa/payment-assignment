@@ -1,8 +1,6 @@
 package com.iiit.payment.payment.services;
 
-import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.PaymentObj;
-import com.iiit.payment.payment.transation.Transaction;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;

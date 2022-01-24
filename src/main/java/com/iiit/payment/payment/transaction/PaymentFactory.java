@@ -1,4 +1,4 @@
-package com.iiit.payment.payment.transation;
+package com.iiit.payment.payment.transaction;
 
 public class PaymentFactory {
 
@@ -14,7 +14,7 @@ public class PaymentFactory {
         }
         else if (type.equalsIgnoreCase("budget")) {
 
-            return new Budget();
+            return new BudgetImpl();
 
         }
         return null;

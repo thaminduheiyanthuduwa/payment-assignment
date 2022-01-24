@@ -2,11 +2,10 @@ package com.iiit.payment.payment.repositories.impl;
 
 import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
-import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.repositories.SaveInfo;
-import com.iiit.payment.payment.transation.BudgetEntity;
-import com.iiit.payment.payment.transation.Expense;
-import com.iiit.payment.payment.transation.Income;
+import com.iiit.payment.payment.transaction.Budget;
+import com.iiit.payment.payment.transaction.Expense;
+import com.iiit.payment.payment.transaction.Income;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,12 +69,12 @@ public class SaveInfoImpl implements SaveInfo {
 
 
     @Override
-    public void saveBudgetDetails(List<BudgetEntity> budgets) throws IOException {
+    public void saveBudgetDetails(List<Budget> budgets) throws IOException {
 
 
         FileOutputStream fileOutputStream = new FileOutputStream("budget.txt");//save file to write objects
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        for (BudgetEntity budget : budgets) {
+        for (Budget budget : budgets) {
             objectOutputStream.writeObject(budget);
         }
         objectOutputStream.close();
