@@ -3,9 +3,9 @@ package com.iiit.payment.payment.repositories.impl;
 import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.repositories.ReadInfo;
-import com.iiit.payment.payment.transaction.Budget;
-import com.iiit.payment.payment.transaction.Expense;
-import com.iiit.payment.payment.transaction.Income;
+import com.iiit.payment.payment.model.Budget;
+import com.iiit.payment.payment.model.Expense;
+import com.iiit.payment.payment.model.Income;
 
 import java.io.*;
 import java.util.ArrayList;

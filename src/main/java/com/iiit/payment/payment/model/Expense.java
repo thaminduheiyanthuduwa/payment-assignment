@@ -1,12 +1,13 @@
-package com.iiit.payment.payment.transaction;
+package com.iiit.payment.payment.model;
 
 import com.iiit.payment.payment.model.Category;
+import com.iiit.payment.payment.transaction.CreateType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
-public class Budget implements CreateType, Serializable {
+public class Expense implements CreateType, Serializable {
 
     private Integer id;
     private String name;
@@ -19,8 +20,8 @@ public class Budget implements CreateType, Serializable {
     private String date;
     private LocalDateTime dateTime;
 
-    public Budget(Integer id, String name, String category, String type, Double amount,
-                  String notes, String recurring, String user, String date, LocalDateTime dateTime) {
+    public Expense(Integer id, String name, String category, String type, Double amount,
+                   String notes, String recurring, String user, String date, LocalDateTime dateTime) {
         this.id = id;
         this.name = name;
         this.category = new Category(category,user);

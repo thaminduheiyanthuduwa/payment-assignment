@@ -1,5 +1,7 @@
 package com.iiit.payment.payment.transaction;
 
+import com.iiit.payment.payment.model.Expense;
+import com.iiit.payment.payment.model.Income;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.model.TotalPayments;
 import com.iiit.payment.payment.repositories.ReadInfo;
