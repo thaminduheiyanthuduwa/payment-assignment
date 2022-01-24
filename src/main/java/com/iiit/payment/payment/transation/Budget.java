@@ -131,10 +131,10 @@ public class Budget implements Payment {
                     && paymentObj.getCategory().getCategoryName().equalsIgnoreCase(category)).collect(Collectors.toList()));
         }
 
-        for (PaymentObj ob : finalObj){
+        for (BudgetEntity ob : returnObj){
 
             finalObj.add(new PaymentObj(ob.getId(), ob.getName(),
-                    ob.getCategory(), ob.getType(), ob.getAmount(),
+                    ob.getCategory().getCategoryName(), ob.getType(), ob.getAmount(),
                     ob.getNotes(), ob.getRecurring(), ob.getUser(), ob.getDate()));
 
         }
