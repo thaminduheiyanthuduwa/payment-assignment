@@ -7,6 +7,8 @@ import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
 import com.iiit.payment.payment.repositories.impl.SaveInfoImpl;
 import com.iiit.payment.payment.services.CategoryService;
 import com.iiit.payment.payment.services.LoginService;
+import com.iiit.payment.payment.transation.Expense;
+import com.iiit.payment.payment.transation.Income;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -76,6 +78,22 @@ public class CategoryServiceImpl implements CategoryService {
         ArrayList<Category> categoryArrayList = new ArrayList<>();
 
         paymentObjs.addAll(readInfo.readBudget());
+
+        ArrayList<Income> obj = new ArrayList<>();
+        ArrayList<Expense> obj2 = new ArrayList<>();
+
+        ArrayList<Income> inc = readInfo.readIncome();
+        ArrayList<Expense> inc2 = readInfo.readExpenses();
+
+        for (Income x : inc){
+            paymentObjs.add(new PaymentObj(x.getId(), x.getName(), x.getCategory().getCategoryName()
+            , x.getType(), x.getAmount(), x.getNotes(), x.getRecurring(), x.getUser(), x.getDate()));
+        }
+        for (Expense x : inc2){
+            paymentObjs.add(new PaymentObj(x.getId(), x.getName(), x.getCategory().getCategoryName()
+            , x.getType(), x.getAmount(), x.getNotes(), x.getRecurring(), x.getUser(), x.getDate()));
+        }
+
 //        paymentObjs.addAll(readInfo.readTransaction());
         categoryArrayList.addAll(readInfo.readCategories());
 
