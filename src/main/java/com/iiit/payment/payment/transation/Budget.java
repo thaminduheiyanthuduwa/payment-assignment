@@ -8,6 +8,7 @@ import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
 import com.iiit.payment.payment.repositories.impl.SaveInfoImpl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 public class Budget implements Payment {
 
     @Override
-    public void save(String user, PaymentObj paymentObj, String type, String date) throws IOException {
+    public void save(String user, PaymentObj paymentObj, String type, String date, LocalDateTime localDateTime) throws IOException {
 
         ArrayList<PaymentObj> paymentObjs = new ArrayList<>();
 

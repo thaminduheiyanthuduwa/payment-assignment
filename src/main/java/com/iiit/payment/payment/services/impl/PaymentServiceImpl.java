@@ -29,7 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment paymentType = paymentFactory.getPayment(type);
 
-        paymentType.save(user, paymentObj, type, date);
+        paymentType.save(user, paymentObj, type, date, LocalDateTime.now());
 
         ResponseObj responseObj = new ResponseObj();
 

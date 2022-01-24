@@ -23,7 +23,7 @@ public class TransactionImpl extends Transaction {
     }
 
     @Override
-    public void save(String user, PaymentObj paymentObj, String type, String date) throws IOException {
+    public void save(String user, PaymentObj paymentObj, String type, String date, LocalDateTime localDateTime) throws IOException {
 
         if (paymentObj.getType().equalsIgnoreCase("income")) {
 
@@ -45,7 +45,7 @@ public class TransactionImpl extends Transaction {
             TransactionImpl income = new TransactionImpl(new Income(++max, paymentObj.getName(),
                     paymentObj.getCategory(), paymentObj.getType(),
                     paymentObj.getAmount(), paymentObj.getNotes(),
-                    paymentObj.getRecurring(), user, date, LocalDateTime.now()));
+                    paymentObj.getRecurring(), user, date, localDateTime));
 
             obj.add((Income) income.createType);
 
@@ -278,17 +278,39 @@ public class TransactionImpl extends Transaction {
 
                 LocalDateTime future = current.plusMinutes(1);
 
-                if (duration.toMinutes() < 60 && Duration.between(current.plusMinutes(1),now).toMinutes() >  -1){
+                Boolean state = true;
 
-                    edit(x.getUser(), new PaymentObj(x.getId(), x.getName(),
-                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
-                            x.getNotes(), "none", x.getUser(), x.getDate()), "", x.getId());
+                while (state) {
 
-                    save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
-                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
-                            x.getNotes(), "minute", x.getUser(), ""), "",
-                            String.valueOf(future.getYear())+"-"+ (future.getMonthValue()<10 ?
-                                    ("0"+String.valueOf(future.getMonthValue())):String.valueOf(future.getMonthValue())));
+                    if (duration.toMinutes() > 60 || Duration.between(current.plusMinutes(1),now).toMinutes() < 1){
+                        state = false;
+                    }
+                    else {
+
+                        edit(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                x.getNotes(), "none", x.getUser(), x.getDate()), "", x.getId());
+
+                        if (Duration.between(current.plusMinutes(1),now).toMinutes() == 1) {
+                            save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                            x.getNotes(), "minute", x.getUser(), ""), "",
+                                    String.valueOf(future.getYear()) + "-" + (future.getMonthValue() < 10 ?
+                                            ("0" + String.valueOf(future.getMonthValue())) : String.valueOf(future.getMonthValue())),
+                                    current.plusMinutes(1));
+                        }
+                        else {
+                            save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                            x.getNotes(), "none", x.getUser(), ""), "",
+                                    String.valueOf(future.getYear()) + "-" + (future.getMonthValue() < 10 ?
+                                            ("0" + String.valueOf(future.getMonthValue())) : String.valueOf(future.getMonthValue())),
+                                    current.plusMinutes(1));
+                        }
+
+                        current = current.plusMinutes(1);
+
+                    }
 
                 }
             }
@@ -297,21 +319,45 @@ public class TransactionImpl extends Transaction {
 
             if (x.getRecurring().equalsIgnoreCase("minute")) {
 
-                Duration duration = Duration.between(x.getDateTime(),now);
+                LocalDateTime current = x.getDateTime();
 
-                LocalDateTime future = now.plusMinutes(1);
+                Duration duration = Duration.between(current,now);
 
-                if (duration.toMinutes() < 60 && Duration.between(future,now).toMinutes() <  1){
+                LocalDateTime future = current.plusMinutes(1);
 
-                    edit(x.getUser(), new PaymentObj(x.getId(), x.getName(),
-                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
-                            x.getNotes(), "none", x.getUser(), x.getDate()), "", x.getId());
+                Boolean state = true;
 
-                    save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
-                                    x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
-                                    x.getNotes(), "minute", x.getUser(), ""), "",
-                            String.valueOf(future.getYear())+"-"+ (future.getMonthValue()<10 ?
-                                    ("0"+String.valueOf(future.getMonthValue())):String.valueOf(future.getMonthValue())));
+                while (state) {
+
+                    if (duration.toMinutes() > 60 || Duration.between(current.plusMinutes(1),now).toMinutes() < 1){
+                        state = false;
+                    }
+                    else {
+
+                        edit(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                x.getNotes(), "none", x.getUser(), x.getDate()), "", x.getId());
+
+                        if (Duration.between(current.plusMinutes(1),now).toMinutes() == 1) {
+                            save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                            x.getNotes(), "minute", x.getUser(), ""), "",
+                                    String.valueOf(future.getYear()) + "-" + (future.getMonthValue() < 10 ?
+                                            ("0" + String.valueOf(future.getMonthValue())) : String.valueOf(future.getMonthValue())),
+                                    current.plusMinutes(1));
+                        }
+                        else {
+                            save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                            x.getNotes(), "none", x.getUser(), ""), "",
+                                    String.valueOf(future.getYear()) + "-" + (future.getMonthValue() < 10 ?
+                                            ("0" + String.valueOf(future.getMonthValue())) : String.valueOf(future.getMonthValue())),
+                                    current.plusMinutes(1));
+                        }
+
+                        current = current.plusMinutes(1);
+
+                    }
 
                 }
             }
