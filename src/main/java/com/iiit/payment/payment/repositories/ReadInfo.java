@@ -4,6 +4,7 @@ import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.transation.Budget;
+import com.iiit.payment.payment.transation.BudgetEntity;
 import com.iiit.payment.payment.transation.Expense;
 import com.iiit.payment.payment.transation.Income;
 
@@ -20,6 +21,6 @@ public interface ReadInfo {
 
     ArrayList<Expense> readExpenses() throws IOException;
 
-    ArrayList<PaymentObj> readBudget() throws IOException;
+    ArrayList<BudgetEntity> readBudget() throws IOException;
 
 }

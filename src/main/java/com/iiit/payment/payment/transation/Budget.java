@@ -8,6 +8,7 @@ import com.iiit.payment.payment.repositories.impl.ReadInfoImpl;
 import com.iiit.payment.payment.repositories.impl.SaveInfoImpl;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,14 @@ public class Budget implements Payment {
     @Override
     public void save(String user, PaymentObj paymentObj, String type, String date, LocalDateTime localDateTime) throws IOException {
 
-        ArrayList<PaymentObj> paymentObjs = new ArrayList<>();
+        ArrayList<BudgetEntity> paymentObjs = new ArrayList<>();
+
+
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<PaymentObj> info = readInfo.readBudget();
+        ArrayList<BudgetEntity> info = readInfo.readBudget();
 
-        Integer id = info.stream().map(PaymentObj::getId).collect(Collectors.toList())
+        Integer id = info.stream().map(BudgetEntity::getId).collect(Collectors.toList())
                 .stream().mapToInt(v->v).max().orElse(-1);
 
         paymentObjs.addAll(info);
@@ -31,7 +34,10 @@ public class Budget implements Payment {
         paymentObj.setUser(user);
         paymentObj.setDate(date);
         paymentObj.setId(++id);
-        paymentObjs.add(paymentObj);
+        paymentObjs.add(new BudgetEntity(paymentObj.getId(), paymentObj.getName(),
+                paymentObj.getCategory(), paymentObj.getType(),
+                paymentObj.getAmount(), paymentObj.getNotes(),
+                paymentObj.getRecurring(), paymentObj.getUser(), paymentObj.getDate(), localDateTime));
 
         SaveInfo saveInfo = new SaveInfoImpl();
         saveInfo.saveBudgetDetails(paymentObjs);
@@ -42,11 +48,11 @@ public class Budget implements Payment {
     public Boolean edit(String user, PaymentObj paymentObj, String type, Integer id) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<PaymentObj> info = readInfo.readBudget();
+        ArrayList<BudgetEntity> info = readInfo.readBudget();
 
 
         Integer finalId = id;
-        List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
+        List<BudgetEntity> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
                 .equals(finalId) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
 
         if (obj.isEmpty())
@@ -56,7 +62,11 @@ public class Budget implements Payment {
             paymentObj.setUser(obj.get(0).getUser());
             paymentObj.setDate(obj.get(0).getDate());
             paymentObj.setId(obj.get(0).getId());
-            info.add(paymentObj);
+            info.add(new BudgetEntity(paymentObj.getId(), paymentObj.getName(),
+                    paymentObj.getCategory(), paymentObj.getType(),
+                    paymentObj.getAmount(), paymentObj.getNotes(),
+                    paymentObj.getRecurring(), paymentObj.getUser(),
+                    paymentObj.getDate(), obj.get(0).getDateTime()));
 
             SaveInfo saveInfo = new SaveInfoImpl();
             saveInfo.saveBudgetDetails(info);
@@ -69,11 +79,11 @@ public class Budget implements Payment {
     public Boolean delete(String user, String type, Integer id) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<PaymentObj> info = readInfo.readBudget();
+        ArrayList<BudgetEntity> info = readInfo.readBudget();
 
 
         Integer finalId = id;
-        List<PaymentObj> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
+        List<BudgetEntity> obj = info.stream().filter(paymentObj1 -> paymentObj1.getId()
                 .equals(finalId) && paymentObj1.getUser().equalsIgnoreCase(user)).collect(Collectors.toList());
 
         if (obj.isEmpty())
@@ -91,7 +101,7 @@ public class Budget implements Payment {
     public TotalPayments getTotalValues(String user, String date) throws IOException {
 
         ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<PaymentObj> info = readInfo.readBudget();
+        ArrayList<BudgetEntity> info = readInfo.readBudget();
 
         double sumValue = info.stream().mapToDouble(paymentObj -> paymentObj.getAmount()).sum();
 
@@ -104,10 +114,13 @@ public class Budget implements Payment {
     @Override
     public List<PaymentObj> getPayment(String user, String category, String date, String type) throws IOException {
 
-        ReadInfo readInfo = new ReadInfoImpl();
-        ArrayList<PaymentObj> allTransaction = readInfo.readBudget();
+        addRecurring();
 
-        ArrayList<PaymentObj> returnObj = new ArrayList<>();
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<BudgetEntity> allTransaction = readInfo.readBudget();
+
+        ArrayList<BudgetEntity> returnObj = new ArrayList<>();
+        ArrayList<PaymentObj> finalObj = new ArrayList<>();
 
         if (category.equalsIgnoreCase("all")){
             returnObj.addAll(allTransaction.stream().filter(paymentObj -> paymentObj.getDate().equalsIgnoreCase(date)
@@ -116,9 +129,74 @@ public class Budget implements Payment {
         else {
             returnObj.addAll(allTransaction.stream().filter(paymentObj -> paymentObj.getDate().equalsIgnoreCase(date)
                     && paymentObj.getUser().equalsIgnoreCase(user)
-                    && paymentObj.getCategory().equalsIgnoreCase(category)).collect(Collectors.toList()));
+                    && paymentObj.getCategory().getCategoryName().equalsIgnoreCase(category)).collect(Collectors.toList()));
         }
 
-        return returnObj;
+        for (PaymentObj ob : finalObj){
+
+            finalObj.add(new PaymentObj(ob.getId(), ob.getName(),
+                    ob.getCategory(), ob.getType(), ob.getAmount(),
+                    ob.getNotes(), ob.getRecurring(), ob.getUser(), ob.getDate()));
+
+        }
+
+        return finalObj;
     }
+
+    private void addRecurring() throws IOException {
+
+        ReadInfo readInfo = new ReadInfoImpl();
+        ArrayList<BudgetEntity> allTransaction = readInfo.readBudget();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        for (BudgetEntity x : allTransaction){
+
+            if (x.getRecurring().equalsIgnoreCase("minute")) {
+
+                LocalDateTime current = x.getDateTime();
+
+                Duration duration = Duration.between(current,now);
+
+                LocalDateTime future = current.plusMinutes(1);
+
+                Boolean state = true;
+
+                while (state) {
+
+                    if (duration.toMinutes() > 60 || Duration.between(current.plusMinutes(1),now).toMinutes() < 1){
+                        state = false;
+                    }
+                    else {
+
+                        edit(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                x.getNotes(), "none", x.getUser(), x.getDate()), "", x.getId());
+
+                        if (Duration.between(current.plusMinutes(1),now).toMinutes() == 1) {
+                            save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                            x.getNotes(), "minute", x.getUser(), ""), "",
+                                    String.valueOf(future.getYear()) + "-" + (future.getMonthValue() < 10 ?
+                                            ("0" + String.valueOf(future.getMonthValue())) : String.valueOf(future.getMonthValue())),
+                                    current.plusMinutes(1));
+                        }
+                        else {
+                            save(x.getUser(), new PaymentObj(x.getId(), x.getName(),
+                                            x.getCategory().getCategoryName(), x.getType(), x.getAmount(),
+                                            x.getNotes(), "none", x.getUser(), ""), "",
+                                    String.valueOf(future.getYear()) + "-" + (future.getMonthValue() < 10 ?
+                                            ("0" + String.valueOf(future.getMonthValue())) : String.valueOf(future.getMonthValue())),
+                                    current.plusMinutes(1));
+                        }
+
+                        current = current.plusMinutes(1);
+
+                    }
+
+                }
+            }
+        }
+    }
+
 }

@@ -361,9 +361,7 @@ public class TransactionImpl extends Transaction {
 
                 }
             }
-
         }
-
     }
 
 }

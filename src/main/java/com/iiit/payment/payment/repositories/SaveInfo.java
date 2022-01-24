@@ -4,6 +4,7 @@ import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.transation.Budget;
+import com.iiit.payment.payment.transation.BudgetEntity;
 import com.iiit.payment.payment.transation.Expense;
 import com.iiit.payment.payment.transation.Income;
 
@@ -21,7 +22,7 @@ public interface SaveInfo {
 
     void saveExpenses(List<Expense> transactions) throws IOException;
 
-    void saveBudgetDetails(List<PaymentObj> budgets) throws IOException;
+    void saveBudgetDetails(List<BudgetEntity> budgets) throws IOException;
 
 
 }

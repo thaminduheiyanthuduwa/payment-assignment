@@ -4,6 +4,7 @@ import com.iiit.payment.payment.model.Category;
 import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.repositories.SaveInfo;
+import com.iiit.payment.payment.transation.BudgetEntity;
 import com.iiit.payment.payment.transation.Expense;
 import com.iiit.payment.payment.transation.Income;
 
@@ -69,12 +70,12 @@ public class SaveInfoImpl implements SaveInfo {
 
 
     @Override
-    public void saveBudgetDetails(List<PaymentObj> budgets) throws IOException {
+    public void saveBudgetDetails(List<BudgetEntity> budgets) throws IOException {
 
 
         FileOutputStream fileOutputStream = new FileOutputStream("budget.txt");//save file to write objects
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        for (PaymentObj budget : budgets) {
+        for (BudgetEntity budget : budgets) {
             objectOutputStream.writeObject(budget);
         }
         objectOutputStream.close();

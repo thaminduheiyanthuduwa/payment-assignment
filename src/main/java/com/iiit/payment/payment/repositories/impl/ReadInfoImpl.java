@@ -5,6 +5,7 @@ import com.iiit.payment.payment.model.SignUp;
 import com.iiit.payment.payment.model.PaymentObj;
 import com.iiit.payment.payment.repositories.ReadInfo;
 import com.iiit.payment.payment.transation.Budget;
+import com.iiit.payment.payment.transation.BudgetEntity;
 import com.iiit.payment.payment.transation.Expense;
 import com.iiit.payment.payment.transation.Income;
 
@@ -128,9 +129,9 @@ public class ReadInfoImpl implements ReadInfo {
     }
 
     @Override
-    public ArrayList<PaymentObj> readBudget() throws IOException {
+    public ArrayList<BudgetEntity> readBudget() throws IOException {
 
-        ArrayList<PaymentObj> paymentObjs = new ArrayList<>();
+        ArrayList<BudgetEntity> paymentObjs = new ArrayList<>();
 
         try {
 
@@ -140,7 +141,7 @@ public class ReadInfoImpl implements ReadInfo {
             while (state != true) {
                 try {
 
-                    PaymentObj paymentObj = (PaymentObj) objectInputStream.readObject();
+                    BudgetEntity paymentObj = (BudgetEntity) objectInputStream.readObject();
                     paymentObjs.add(paymentObj);
 
                 } catch (Exception e) {
