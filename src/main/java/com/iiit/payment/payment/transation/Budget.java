@@ -22,7 +22,6 @@ public class Budget implements Payment {
         ArrayList<BudgetEntity> paymentObjs = new ArrayList<>();
 
 
-
         ReadInfo readInfo = new ReadInfoImpl();
         ArrayList<BudgetEntity> info = readInfo.readBudget();
 
